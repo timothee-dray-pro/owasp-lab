@@ -26,3 +26,22 @@ Lab pratique pour comprendre et exploiter les failles OWASP Top 10.
 → le serveur visite lui-même son panel interne à notre place.
 
 **Correction :** whitelist des domaines autorisés — toute URL hors liste est rejetée.
+
+## A01 — Broken Access Control
+
+**Principe :** le serveur fait confiance à des données envoyées par le client (paramètre URL, cookie) pour déterminer les droits d'accès.
+
+**Exploit :**
+/admin?role=admin
+
+→ n'importe qui accède au panel admin en se déclarant admin dans l'URL.
+
+**Correction :** stocker le rôle dans une session côté serveur — le client ne peut pas la modifier.
+
+## A07 — Authentication Failures
+
+**Principe :** aucune limite sur les tentatives de connexion permet à un attaquant de tester des milliers de mots de passe automatiquement.
+
+**Exploit :** script Python qui teste une wordlist → mot de passe "1234" trouvé en 4 essais.
+
+**Correction :** rate limiting — max 3 tentatives par IP sur 60 secondes, réponse 429 au-delà.
