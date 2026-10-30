@@ -53,6 +53,19 @@ Collé sur crackstation.net → cracké en moins d'une seconde via rainbow table
 
 **Correction :** rate limiting — max 3 tentatives par IP sur 60 secondes, réponse 429 au-delà.
 
+## A09 — Logging & Monitoring Failures
+
+**Principe :** sans logs métier exploitables, une attaque passe inaperçue — impossible de détecter ou d'investiguer.
+
+**Exploit :** brute-force visible uniquement comme des requêtes HTTP brutes, sans contexte d'attaque.
+
+**Correction :**
+
+- Logger dédié (`propagate=False`) pour isoler les logs d'auth des logs Werkzeug — sinon l'URL complète (avec le mot de passe en clair) se retrouve dans le fichier.
+- Log de chaque échec avec username + IP + timestamp → pattern brute-force immédiatement visible.
+
+**Piège rencontré :** un mot de passe passé en query string (`?password=...`) finit toujours loggé quelque part. Un vrai login utilise POST, jamais l'URL.
+
 ## A10 — SSRF (Server-Side Request Forgery)
 
 **Principe :** le serveur fait une requête HTTP vers une URL fournie par l'utilisateur, ce qui permet d'atteindre des ressources internes normalement inaccessibles.
