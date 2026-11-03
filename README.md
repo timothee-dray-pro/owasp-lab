@@ -37,6 +37,18 @@ Collé sur crackstation.net → cracké en moins d'une seconde via rainbow table
 
 ---
 
+## A04 — Insecure Design
+
+**Principe :** la faille n'est pas dans le code mais dans la **conception** de la fonctionnalité. Même un code "propre" reste vulnérable si le design est mauvais dès le départ.
+
+**Exploit :** token de reset de mot de passe sur 4 chiffres (9000 combinaisons), sans expiration ni usage unique.
+/reset-confirm?username=admin&token=XXXX&nouveau_mdp=hacked123
+→ brute-force complet du token en **7 secondes** (3539 essais) → prise de contrôle du compte admin.
+
+**Correction :** `secrets.token_urlsafe(16)` → espace de ~2^128 possibilités, brute-force impossible en pratique. + expiration à 5 min + usage unique.
+
+**Différence avec A07 :** en A07 le vrai correctif était le rate limiting (mécanisme standard mal protégé). En A04 le rate limiting ne serait qu'un pansement — le défaut de fond est la **taille du token**. Un token bien conçu suffit à lui seul à fermer la faille, sans rate limiting.
+
 ## A05 — Security Misconfiguration
 
 **Principe :** `debug=True` en production expose le code source, les chemins de fichiers et une console Python interactive.
